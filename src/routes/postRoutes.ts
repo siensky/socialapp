@@ -19,6 +19,27 @@ async function postRoutes(
     handler: postsController.getFeed,
     preHandler: [authenticate],
   });
+
+  httpServer.route({
+    method: "DELETE",
+    url: "/post/:id",
+    handler: postsController.deletePost,
+    preHandler: [authenticate]
+  })
+
+  httpServer.route({
+    method: "GET",
+    url: "/post/:id",
+    handler: postsController.getPostById,
+    preHandler: [authenticate]
+  })
+
+  httpServer.route({
+    method: "GET",
+    url: "/posts/:username",
+    handler: postsController.getPostsByUser,
+    preHandler: [authenticate]
+  })
 }
 
 export default postRoutes;

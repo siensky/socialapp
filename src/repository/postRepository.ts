@@ -45,3 +45,57 @@ LIMIT 25`;
 
   return feed;
 }
+
+
+//need to add deleted at column for timestamp in db table in order
+//to make cron job that hard deletes after two weeks
+export async function deletePostById(username: string, postId: string) {
+  const result = await db`
+     UPDATE posts
+    SET 
+      status = 'deleted',
+      deleted_at = NOW()
+    WHERE id = ${postId}
+    AND user_id = (
+      SELECT id FROM users WHERE username = ${username}
+    )
+    RETURNING *;
+  `;
+
+  return result[0];
+
+}
+
+export async function getPostById(postId: string) {
+  const [post] = await db`
+    SELECT 
+      p.*,
+      u.username,
+      u.visibility
+    FROM posts p
+    JOIN users u ON p.user_id = u.id
+    WHERE p.id = ${postId}
+    AND p.status = 'active'
+  `;
+
+  return post;
+}
+
+export async function getPostsByUser(username: string) {
+  const posts = await db`
+    SELECT 
+      p.id,
+      p.image,
+      p.caption,
+      p.created_at,
+      u.username AS owner_username,
+      u.visibility
+    FROM posts p
+    JOIN users u ON p.user_id = u.id
+    WHERE u.username = ${username}
+    AND p.status = 'active'
+    ORDER BY p.created_at DESC
+  `;
+
+  return posts;
+}

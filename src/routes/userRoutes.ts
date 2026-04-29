@@ -5,25 +5,23 @@ import { loginSchema } from "../schemas/loginUser";
 import authenticate from "../auth/authenticate";
 
 /*
-
+-archive POST so only user can see
+-show archived posts for only user
+-block user
+view users blocked users
+-unblock user
+update user
+delete user account
+-remove a user following
 - show users that that one user is following
 - a users show followers
--block user
--unblock user
--remove a user
+-toggle like
+
 -get comments for a post
 -post comment
 -delete comment
--archive POST so only user can see
--delete POST
--toggle like
--show archived posts for only user
--show all posts by one user
-update user
 search user
 svara en kommentar
-
-
 
 
 */

@@ -58,4 +58,93 @@ export async function getFeed(request: FastifyRequest, reply: FastifyReply) {
   return reply.status(200).send(feed);
 }
 
+export async function deletePost(
+  request: FastifyRequest<{ Params: { postId: string } }>,
+  reply: FastifyReply,
+) {
+  const username = request.user.username;
+  const postId = request.params.postId;
+
+  const deleted = await repository.posts.deletePostById(username, postId);
+  if (!deleted) {
+    return reply.status(404).send({
+      message: "Post not found or not authorized",
+    });
+  }
+
+  return reply.status(200).send({
+    message: "Post soft deleted",
+    post: deleted,
+  });
+}
+
+export async function getPostById(
+  request: FastifyRequest<{ Params: { postId: string } }>,
+  reply: FastifyReply,
+) {
+  const postId = request.params.postId;
+  const currentUsername = request.user.username;
+
+  const post = await repository.posts.getPostById(postId);
+
+  if (!post) {
+    return reply.status(404).send({
+      message: "Post not found",
+    });
+  }
+
+  if (post.username === currentUsername) {
+    return reply.send(post);
+  }
+
+  if (post.visibility === "public") {
+    return reply.send(post);
+  }
+
+  const isFollowingUser = await repository.users.isFollowing(
+    currentUsername,
+    post.username,
+  );
+
+  if (!isFollowingUser) {
+    return reply.status(403).send({
+      message: "Account is private",
+    });
+  }
+
+  return reply.send(post);
+}
+
+export async function getPostsByUser(
+  request: FastifyRequest<{ Params: { username: string } }>,
+  reply: FastifyReply,
+) {
+  const username = request.params.username;
+  const currentUser = request.user.username;
+
+  const posts = await repository.posts.getPostsByUser(username);
+
+  if (posts.length === 0) {
+    return reply.status(404).send({
+      message: "No posts or no user found",
+    });
+  }
+
+  const owner = posts[0];
+
+  if (owner.owner_username !== currentUser && owner.visibility === "private") {
+    const isFollowingUser = await repository.users.isFollowing(
+      currentUser,
+      username,
+    );
+    if (!isFollowingUser) {
+      return reply.status(403).send({
+        message: "Account is private",
+      });
+    }
+  }
+
+  return reply.send(posts);
+}
+
 // http://10.100.2.55:3000
