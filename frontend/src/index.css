@@ -1,11 +1,143 @@
 @import "../styles/globals.css";
 
-@layer base {
-  :root {
-    @apply font-sans;
-  }
+/* ─── Design tokens ───────────────────────────────────── */
+:root {
+  --accent:     #00e0ff;
+  --accent-dim: rgba(0, 224, 255, 0.1);
+  --accent-glow: 0 0 12px rgba(0, 224, 255, 0.35);
+  --nav-height: 56px;
+  --bg: oklch(0.07 0 0);
+}
 
-  body {
-    @apply min-w-[320px] min-h-screen m-0 bg-background text-foreground;
+/* ─── Reset / base ────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  height: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background-color: var(--bg);
+  color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* ─── Interactive elements ───────────────────────────── */
+button, a, label, [role="button"] {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+/* Minimum tap target */
+button, a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Inputs ─────────────────────────────────────────── */
+input, textarea, select {
+  /* Prevents iOS from zooming on focus */
+  font-size: 16px !important;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent) !important;
+}
+
+/* ─── Images ─────────────────────────────────────────── */
+img {
+  display: block;
+  max-width: 100%;
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+/* ─── App root ───────────────────────────────────────── */
+#root {
+  width: 100%;
+  min-height: 100dvh;
+}
+
+.app-shell {
+  width: 100%;
+  max-width: 448px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ─── Page header (safe-area aware) ─────────────────── */
+.page-header {
+  padding-top: max(16px, env(safe-area-inset-top, 0px));
+}
+
+/* ─── Scrollbar (desktop only) ───────────────────────── */
+@media (pointer: fine) {
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: oklch(0.28 0 0); border-radius: 2px; }
+}
+
+/* ─── Desktop border ─────────────────────────────────── */
+@media (min-width: 480px) {
+  .app-shell {
+    border-left: 1px solid oklch(0.15 0 0);
+    border-right: 1px solid oklch(0.15 0 0);
   }
+}
+
+/* ─── Animations ─────────────────────────────────────── */
+@keyframes like-burst {
+  0%   { transform: scale(0);   opacity: 1; }
+  60%  { transform: scale(1.4); opacity: 1; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+.like-burst { animation: like-burst 0.6s ease forwards; }
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-down { animation: slide-down 0.18s ease; }
+
+@keyframes slide-up-modal {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.animate-slide-up { animation: slide-up-modal 0.25s cubic-bezier(0.32, 0.72, 0, 1); }
+
+/* ─── Utilities ──────────────────────────────────────── */
+.logo-glow {
+  text-shadow: 0 0 20px rgba(0,224,255,0.4), 0 0 40px rgba(0,224,255,0.15);
 }

@@ -39,8 +39,16 @@ CREATE TABLE IF NOT EXISTS comments (
                           user_id INTEGER NOT NULL REFERENCES users(id),
                           post_id INTEGER NOT NULL REFERENCES posts(id),
                           parent_comment_id INTEGER NULL REFERENCES comments(id),
+                          text TEXT NOT NULL,
                           created_at TIMESTAMPTZ NOT NULL,
                           updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS blocked_users (
+                          blocker_id INTEGER NOT NULL REFERENCES users(id),
+                          blocked_id INTEGER NOT NULL REFERENCES users(id),
+                          created_at TIMESTAMPTZ NOT NULL,
+                          PRIMARY KEY (blocker_id, blocked_id)
 );
 
 CREATE TABLE IF NOT EXISTS reactions (

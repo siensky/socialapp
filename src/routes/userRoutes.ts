@@ -6,11 +6,25 @@ import authenticate from "../auth/authenticate";
 
 /*
 
-- Skapa konto
-- Logga in
-- Följa/avfölja en annan användare
-- Skapa inlägg
-- Hämta feed
+- show users that that one user is following
+- a users show followers
+-block user
+-unblock user
+-remove a user
+-get comments for a post
+-post comment
+-delete comment
+-archive POST so only user can see
+-delete POST
+-toggle like
+-show archived posts for only user
+-show all posts by one user
+update user
+search user
+svara en kommentar
+
+
+
 
 */
 
